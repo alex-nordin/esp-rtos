@@ -7,6 +7,18 @@
     nixpkgs-esp-dev.url = "github:mirrexagon/nixpkgs-esp-dev/";
   };
 
+  # perSystem = { system, ... }: {
+  #   _module.args.pkgs = import inputs.nixpkgs {
+  #     inherit system;
+  #     overlays = [
+  #       inputs.foo.overlays.default
+  #       (final: prev: {
+  #         # ... things you need to patch ...
+  #       })
+  #     ];
+  #     config = { };
+  #   };
+  # };
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake {inherit inputs;} {
       imports = [
@@ -27,8 +39,17 @@
         lib,
         ...
       }: {
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [
+            inputs.nixpkgs-esp-dev.overlays.default
+          ];
+        };
+
         devShells.default = pkgs.mkShell {
-          # packages = with pkgs; [sqlx-cli];
+          # packages = with pkgs; [
+          #   # esp-idf-esp32c3
+          # ];
           inputsFrom = [
             # config.treefmt.build.devShell
             # self'.devShells.webbed_site
@@ -40,7 +61,8 @@
           # in
           nativeBuildInputs = with pkgs; [
             just
-            inputs'.nixpkgs-esp-dev.sp32c3-idf
+            esp-idf-esp32c3
+            # inputs'.nixpkgs-esp-dev.esp-idf-esp32c3
             espflash
           ];
         };
