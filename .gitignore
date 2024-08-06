@@ -3,4 +3,4 @@
 .direnv/*
 .direnv
 build/
-./sdkconfig
+sdkconfig
